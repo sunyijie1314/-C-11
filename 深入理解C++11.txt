@@ -1,0 +1,114 @@
+
+第一章  新标准的诞生
+C++98/03设计目标：
+1.比C语言更适合系统编程（且与C语言兼容）
+2.支持数据抽象
+3.支持面向对象编程
+3.支持泛型编程
+
+C++11设计目标：
+1.使得C++成为更好的适用于系统开发及库开发的语言
+2.使得C++成为更易于教学的语言（语法更加一致化和简单化）
+3.保证语言的稳定性，以及和C++03及C语言的兼容性
+
+C++11相对于C++98/03显著的增强：
+1.通过内存模型、线程、原子操作等来支持本地并行编程（Native Concurrency)
+2.通过统一初始化表达式、auto、declytype、移动语义等来统一对泛型编程的支持
+3.通过constexpr、POD（概念）等更好的支持系统编程
+4.通过内联命名空间、继承构造函数和右值引用等，以更好地支持库的构建
+
+C++11新关键字：
+1.alignas
+2.alignof decltype
+3.auto（重新定义）
+4.static_assert
+5.using（重新定义）
+6.noexpert
+7.export（弃用）
+8.nullptr
+9.constexpr
+10.thread_local
+
+C++11特性一览：
+1.保持语言的稳定性与兼容性（Maintan stability and compatiility）
+2.更倾向于使用库而不是扩展语言来实现特性（Prefer libraries to language extensiops）
+3.更倾向于通用的而不是特殊的手段来实现特性（Prefer generality to specialization）
+4.专家新手一概支持（Support both expers and novices）
+5.增强类型的安全性（Increase type safety）
+6.增强代码执行性能和操作硬件的能力（Improve performance and ability to work directly with hardware）
+7.开发能够改变人们思维方式的特性（Make only changes that change the way people think）
+8.融入编程现实（Fit into the real world）
+
+
+第二章 保证稳定性和兼容性
+一、保持与C99兼容
+	1.预定义宏
+	2.__func__预定义标识符
+		__func__预定义标识符可以使用在函数、类和结构体中，返回当前函数名字。
+	3._Pragma操作符
+		与#pragma作用相似，比起#pragma，可以使用在宏中
+	4.变长参数的宏定义以及__VA_ARGS__
+		输出省略的参数
+		#define LOG(...) {\
+			fprintf(stderr, "%s: Line %d:\t", __FILE__, __LINE__);\
+			fprintf(stderr, __VA_ARGS__);\
+			fprintf(stderr, "\n");\
+		}
+		
+		int main(){
+			int x = 3;
+			LOG("x = %d", x);  //文件名: Line 行数:		x = 3
+		}
+	5.宽窄字符串的连接
+		自动会把char转换为wchar_t，进行连接
+	
+二、增加long long整型，可以在不同平台有不同长度，但是至少64位
+三、满足C++11的标准可以自己增加扩展的整型
+四、__cplusplus可以判断是否支持C++11
+五、静态断言static_assert的参数必须是常量表达式，在编译时就会运行。
+六、noexpert(true)可以不抛出异常，出现异常会通过std::terminate结束程序。
+七、快速初始化成员变量
+	可以使用=或{}进行初始化，可以对类成员进行初始化，初始化时间晚于初始化列表
+八、非静态成员sizeof，在C++11中可以直接sizeof非静态的类成员。
+九、扩展friend语法，可以使用类模板实现友元（注：建议使用get/set而不使用friend，friend破坏了面对对象编程的封装性）
+十、final/override控制
+	final表示该虚构函数不再能被重载。override表示重载了的函数。
+十一、模板可以像函数一样有默认的参数
+十二、可以使用外部模板，提供优化编译时间和内存消耗的方法
+十三、局部类型和匿名类型可以作为模板的实参
+
+第三章 通用为本，专用为末
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
