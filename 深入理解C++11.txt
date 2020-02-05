@@ -1,194 +1,239 @@
 目录 P16
 第一章  新标准的诞生 P19
-C++98/03设计目标：
-1.比C语言更适合系统编程（且与C语言兼容）
-2.支持数据抽象
-3.支持面向对象编程
-3.支持泛型编程
+	C++98/03设计目标：
+	1.比C语言更适合系统编程（且与C语言兼容）
+	2.支持数据抽象
+	3.支持面向对象编程
+	3.支持泛型编程
 
-C++11设计目标：
-1.使得C++成为更好的适用于系统开发及库开发的语言
-2.使得C++成为更易于教学的语言（语法更加一致化和简单化）
-3.保证语言的稳定性，以及和C++03及C语言的兼容性
+	C++11设计目标：
+	1.使得C++成为更好的适用于系统开发及库开发的语言
+	2.使得C++成为更易于教学的语言（语法更加一致化和简单化）
+	3.保证语言的稳定性，以及和C++03及C语言的兼容性
 
-C++11相对于C++98/03显著的增强：
-1.通过内存模型、线程、原子操作等来支持本地并行编程（Native Concurrency)
-2.通过统一初始化表达式、auto、declytype、移动语义等来统一对泛型编程的支持
-3.通过constexpr、POD（概念）等更好的支持系统编程
-4.通过内联命名空间、继承构造函数和右值引用等，以更好地支持库的构建
+	C++11相对于C++98/03显著的增强：
+	1.通过内存模型、线程、原子操作等来支持本地并行编程（Native Concurrency)
+	2.通过统一初始化表达式、auto、declytype、移动语义等来统一对泛型编程的支持
+	3.通过constexpr、POD（概念）等更好的支持系统编程
+	4.通过内联命名空间、继承构造函数和右值引用等，以更好地支持库的构建
 
-C++11新关键字：
-1.alignas
-2.alignof decltype
-3.auto（重新定义）
-4.static_assert
-5.using（重新定义）
-6.noexpert
-7.export（弃用）
-8.nullptr
-9.constexpr
-10.thread_local
+	C++11新关键字：
+	1.alignas
+	2.alignof decltype
+	3.auto（重新定义）
+	4.static_assert
+	5.using（重新定义）
+	6.noexpert
+	7.export（弃用）
+	8.nullptr
+	9.constexpr
+	10.thread_local
 
-C++11特性一览：
-1.保持语言的稳定性与兼容性（Maintan stability and compatiility）
-2.更倾向于使用库而不是扩展语言来实现特性（Prefer libraries to language extensiops）
-3.更倾向于通用的而不是特殊的手段来实现特性（Prefer generality to specialization）
-4.专家新手一概支持（Support both expers and novices）
-5.增强类型的安全性（Increase type safety）
-6.增强代码执行性能和操作硬件的能力（Improve performance and ability to work directly with hardware）
-7.开发能够改变人们思维方式的特性（Make only changes that change the way people think）
-8.融入编程现实（Fit into the real world）
+	C++11特性一览：
+	1.保持语言的稳定性与兼容性（Maintan stability and compatiility）
+	2.更倾向于使用库而不是扩展语言来实现特性（Prefer libraries to language extensiops）
+	3.更倾向于通用的而不是特殊的手段来实现特性（Prefer generality to specialization）
+	4.专家新手一概支持（Support both expers and novices）
+	5.增强类型的安全性（Increase type safety）
+	6.增强代码执行性能和操作硬件的能力（Improve performance and ability to work directly with hardware）
+	7.开发能够改变人们思维方式的特性（Make only changes that change the way people think）
+	8.融入编程现实（Fit into the real world）
 
 
 第二章 保证稳定性和兼容性 P37
-一、保持与C99兼容
-	1.预定义宏
-	2.__func__预定义标识符
-		__func__预定义标识符可以使用在函数、类和结构体中，返回当前函数名字。
-	3._Pragma操作符
-		与#pragma作用相似，比起#pragma，可以使用在宏中
-	4.变长参数的宏定义以及__VA_ARGS__
-		输出省略的参数
-		#define LOG(...) {\
-			fprintf(stderr, "%s: Line %d:\t", __FILE__, __LINE__);\
-			fprintf(stderr, __VA_ARGS__);\
-			fprintf(stderr, "\n");\
-		}
+	一、保持与C99兼容
+		1.预定义宏
+		2.__func__预定义标识符
+			__func__预定义标识符可以使用在函数、类和结构体中，返回当前函数名字。
+		3._Pragma操作符
+			与#pragma作用相似，比起#pragma，可以使用在宏中
+		4.变长参数的宏定义以及__VA_ARGS__
+			输出省略的参数
+			#define LOG(...) {\
+				fprintf(stderr, "%s: Line %d:\t", __FILE__, __LINE__);\
+				fprintf(stderr, __VA_ARGS__);\
+				fprintf(stderr, "\n");\
+			}
+			
+			int main(){
+				int x = 3;
+				LOG("x = %d", x);  //文件名: Line 行数:		x = 3
+			}
+		5.宽窄字符串的连接
+			自动会把char转换为wchar_t，进行连接
 		
-		int main(){
-			int x = 3;
-			LOG("x = %d", x);  //文件名: Line 行数:		x = 3
-		}
-	5.宽窄字符串的连接
-		自动会把char转换为wchar_t，进行连接
-	
-二、增加long long整型，可以在不同平台有不同长度，但是至少64位
-三、满足C++11的标准可以自己增加扩展的整型
-四、__cplusplus可以判断是否支持C++11
-五、静态断言static_assert的参数必须是常量表达式，在编译时就会运行。
-六、noexpert(true)可以不抛出异常，出现异常会通过std::terminate结束程序。
-七、快速初始化成员变量
-	可以使用=或{}进行初始化，可以对类成员进行初始化，初始化时间晚于初始化列表
-八、非静态成员sizeof，在C++11中可以直接sizeof非静态的类成员。
-九、扩展friend语法，可以使用类模板实现友元（注：建议使用get/set而不使用friend，friend破坏了面对对象编程的封装性）
-十、final/override控制
-	final表示该虚构函数不再能被重载。override表示重载了的函数。
-十一、模板可以像函数一样有默认的参数
-十二、可以使用外部模板，提供优化编译时间和内存消耗的方法
-十三、局部类型和匿名类型可以作为模板的实参
+	二、增加long long整型，可以在不同平台有不同长度，但是至少64位
+	三、满足C++11的标准可以自己增加扩展的整型
+	四、__cplusplus可以判断是否支持C++11
+	五、静态断言static_assert的参数必须是常量表达式，在编译时就会运行。
+	六、noexpert(true)可以不抛出异常，出现异常会通过std::terminate结束程序。
+	七、快速初始化成员变量
+		可以使用=或{}进行初始化，可以对类成员进行初始化，初始化时间晚于初始化列表
+	八、非静态成员sizeof，在C++11中可以直接sizeof非静态的类成员。
+	九、扩展friend语法，可以使用类模板实现友元（注：建议使用get/set而不使用friend，friend破坏了面对对象编程的封装性）
+	十、final/override控制
+		final表示该虚构函数不再能被重载。override表示重载了的函数。
+	十一、模板可以像函数一样有默认的参数
+	十二、可以使用外部模板，提供优化编译时间和内存消耗的方法
+	十三、局部类型和匿名类型可以作为模板的实参
 
-第三章 通用为本，专用为末 P75
-一、继承构造函数
-	struct A {
-		A(int i) {}
-		A(double d, int i) {}
-		A(float f, int i, const char* c) {}
-		//...
-	};
-	
-	struct B : A {
-		using A::A;		// 继承构造函数
-		//...
-		virtual void ExtraInterface(){}
-	};
-	这样写可以不再需要写透传构造函数，且继承构造函数为隐式声明。但是基类构造函数带默认参数时会存在问题，需要小心使用。
-	当一个类继承冲突的构造函数时需要显式定义，如：
-	struct A { A(int) {} };
-	struct B { B(int) {} };
-	
-	struct C : A, B {
-		using A::A;
-		using B::B;
-		C(int){}
-	};
-二、委派构造函数
-	class Info {
-	public:
-		Info() { InitRest(); }
-		Info(int i) : Info() { type = i; }
-		Info(char e) : Info() { name = e; }
-	private:
-		void InitRest() {}		//初始化
-		int type {1};
-		char name {'a'};
-		//...
-	};
-	可以设置一个“基准版本”构造函数，然后使用委派构造函数。
-	注意：不能同时初始化成员和委托构造函数。不能形成委托环。
-三、右值引用：移动语义和完美转发
-	1.指针成员和拷贝构造，使用拷贝构造函数时注意使用深拷贝，因为浅拷贝会导致参数指向同一块内存
-	2.移动语义：不申请内存而直接获取堆内存，即使用右值引用（详见P90图3-2）
-		在缩减代码行数上有意义，实际调试或性能上不如直接传入引用或指针。
-	3.左值、右值与右值引用
-		T && a = ReturnRvalue();
-		C++ 11可以使用如上方式进行右值引用，减少构造和析构函数的使用。
-	4.<utility>中有std::move，作用是将左值强制转化为右值。主要使用于移动构造函数。
-	5.右值引用使用于置换函数可以实现更高性能。
-	6.template <typename T> void IamForwording(T t) { IrunCodeActually(t); }
-		以上是转发，但非完美转发。使用右值引用可以实现完美转发：
-		template <typename T> void IamForwording(T && t) { 
-			IrunCodeActually(static_cast<T &&>(t)); 
+	第三章 通用为本，专用为末 P75
+	一、继承构造函数
+		struct A {
+			A(int i) {}
+			A(double d, int i) {}
+			A(float f, int i, const char* c) {}
+			//...
+		};
 		
-		}
-		使用左值时不用move，而使用特定的forward把左值转化为右值。
-四、隐式转换失败时就需要使用显示转换。
-五、列表初始化
-	1.初始化列表可以使用花括号直接初始化
-		int a[] = {1, 3, 5};
-		int b[] {2, 4, 6};
-		vector<int> c{1, 3, 5};
-		map<int, float> d = {{1, 1.0f}, {2, 2.0f}, {5, 3.2f}};
-	2.使用列表初始化可以防止类型收窄（narrowing)，即防止数据变化或隐式转换导致精度丢失。
-六、POD类型
-	C++ 11将POD划分为两个基本概念的合集，即：平凡的（trivial)和标准布局的（standard layout）。
-	平凡的：P116
-		1.拥有平凡的默认构造函数和析构函数
-		2.拥有平凡的拷贝构造函数和移动构造函数
-		3.拥有平凡的拷贝赋值运算符和移动赋值运算符
-		4.不能包含虚函数以及虚基类
-	标准布局：P118
-		1.所有非静态成员有相同的访问权限
-		2.在类或者结构体继承时，满足以下两种情况之一：
-			派生类中有非静态成员，且只有一个仅包含静态成员的基类。
-			基类有非静态成员，而派生类没有非静态成员。
-		3.类中第一个非静态成员的类型与其基类不同
-		4.没有虚函数和虚基类
-		5.所有非静态数据成员均符合标准布局类型，其基类也符合标准布局。
-	POD类型的好处：
-		1.字节赋值。
-		2.提供对C内存布局兼容。
-		3.保证静态初始化的安全有效。
-七、非受限联合体，由原来的只能POD类型使用，在非POD类型中自己添加构造函数即可使用
-八、遵守标准，可以更方便的构建自定义字面量
-九、内联名字空间：可以在命名空间内使用命名空间
-十、using也具有typedef的作用，且可以在模板类中使用
-十一、一般化的SFINAE规则提高了泛型编程的能力
+		struct B : A {
+			using A::A;		// 继承构造函数
+			//...
+			virtual void ExtraInterface(){}
+		};
+		这样写可以不再需要写透传构造函数，且继承构造函数为隐式声明。但是基类构造函数带默认参数时会存在问题，需要小心使用。
+		当一个类继承冲突的构造函数时需要显式定义，如：
+		struct A { A(int) {} };
+		struct B { B(int) {} };
+		
+		struct C : A, B {
+			using A::A;
+			using B::B;
+			C(int){}
+		};
+	二、委派构造函数
+		class Info {
+		public:
+			Info() { InitRest(); }
+			Info(int i) : Info() { type = i; }
+			Info(char e) : Info() { name = e; }
+		private:
+			void InitRest() {}		//初始化
+			int type {1};
+			char name {'a'};
+			//...
+		};
+		可以设置一个“基准版本”构造函数，然后使用委派构造函数。
+		注意：不能同时初始化成员和委托构造函数。不能形成委托环。
+	三、右值引用：移动语义和完美转发
+		1.指针成员和拷贝构造，使用拷贝构造函数时注意使用深拷贝，因为浅拷贝会导致参数指向同一块内存
+		2.移动语义：不申请内存而直接获取堆内存，即使用右值引用（详见P90图3-2）
+			在缩减代码行数上有意义，实际调试或性能上不如直接传入引用或指针。
+		3.左值、右值与右值引用
+			T && a = ReturnRvalue();
+			C++ 11可以使用如上方式进行右值引用，减少构造和析构函数的使用。
+		4.<utility>中有std::move，作用是将左值强制转化为右值。主要使用于移动构造函数。
+		5.右值引用使用于置换函数可以实现更高性能。
+		6.template <typename T> void IamForwording(T t) { IrunCodeActually(t); }
+			以上是转发，但非完美转发。使用右值引用可以实现完美转发：
+			template <typename T> void IamForwording(T && t) { 
+				IrunCodeActually(static_cast<T &&>(t)); 
+			
+			}
+			使用左值时不用move，而使用特定的forward把左值转化为右值。
+	四、隐式转换失败时就需要使用显示转换。
+	五、列表初始化
+		1.初始化列表可以使用花括号直接初始化
+			int a[] = {1, 3, 5};
+			int b[] {2, 4, 6};
+			vector<int> c{1, 3, 5};
+			map<int, float> d = {{1, 1.0f}, {2, 2.0f}, {5, 3.2f}};
+		2.使用列表初始化可以防止类型收窄（narrowing)，即防止数据变化或隐式转换导致精度丢失。
+	六、POD类型
+		C++ 11将POD划分为两个基本概念的合集，即：平凡的（trivial)和标准布局的（standard layout）。
+		平凡的：P116
+			1.拥有平凡的默认构造函数和析构函数
+			2.拥有平凡的拷贝构造函数和移动构造函数
+			3.拥有平凡的拷贝赋值运算符和移动赋值运算符
+			4.不能包含虚函数以及虚基类
+		标准布局：P118
+			1.所有非静态成员有相同的访问权限
+			2.在类或者结构体继承时，满足以下两种情况之一：
+				派生类中有非静态成员，且只有一个仅包含静态成员的基类。
+				基类有非静态成员，而派生类没有非静态成员。
+			3.类中第一个非静态成员的类型与其基类不同
+			4.没有虚函数和虚基类
+			5.所有非静态数据成员均符合标准布局类型，其基类也符合标准布局。
+		POD类型的好处：
+			1.字节赋值。
+			2.提供对C内存布局兼容。
+			3.保证静态初始化的安全有效。
+	七、非受限联合体，由原来的只能POD类型使用，在非POD类型中自己添加构造函数即可使用
+	八、遵守标准，可以更方便的构建自定义字面量
+	九、内联名字空间：可以在命名空间内使用命名空间
+	十、using也具有typedef的作用，且可以在模板类中使用
+	十一、一般化的SFINAE规则提高了泛型编程的能力
 
 第四章 新手易学，老兵易用 P141
-一、右尖括号>的改进，从C++98右尖括号必须空格分离到正常解析右尖括号
-二、auto类型推导
-	1.auto会自动适应变量类型
-	2.auto不能使用：
-		对于函数fun来说，auto不能是其形参类型
-		对于结构体来说，非静态成员变量的类型不能是auto
-		声明auto数组
-		在实例化模板的时候不能使用auto作为模板参数
-三、decltype也会像auto一样进行推导，然后进行赋值，如：
-	int i;
-	decltype(i) a; 		//a: int
-四、追踪返回类型，可以结合auto与decltype实现返回类型的泛型，如：
-	template<typename T1, typename T2>
-	auto Sum(T1 & t1, T2 & t2) -> decltype(t1 + t2){
-		return t1 + t2;
-	}
-五、基于范围的for循环
-	vector<int> v = {1, 2, 3, 4, 5};
-	for(auto e:v)
-		cout << e << endl;
+	一、右尖括号>的改进，从C++98右尖括号必须空格分离到正常解析右尖括号
+	二、auto类型推导
+		1.auto会自动适应变量类型
+		2.auto不能使用：
+			对于函数fun来说，auto不能是其形参类型
+			对于结构体来说，非静态成员变量的类型不能是auto
+			声明auto数组
+			在实例化模板的时候不能使用auto作为模板参数
+	三、decltype也会像auto一样进行推导，然后进行赋值，如：
+		int i;
+		decltype(i) a; 		//a: int
+	四、追踪返回类型，可以结合auto与decltype实现返回类型的泛型，如：
+		template<typename T1, typename T2>
+		auto Sum(T1 & t1, T2 & t2) -> decltype(t1 + t2){
+			return t1 + t2;
+		}
+	五、基于范围的for循环
+		vector<int> v = {1, 2, 3, 4, 5};
+		for(auto e:v)
+			cout << e << endl;
 
 第五章 提高类型安全 P173
+	一、强类型枚举，如：
+		enum class Type { General, Light };
+		优势：
+			强作用域，强类型枚举成员的名称不会被输出到其父作用域空间。
+			转换限制，强类型枚举成员的值不可以与整型隐式地相互转换。
+			可以指定底层类型。如：
+			enum class Type: char { General, Light };
+	二、堆内存管理
+		1.智能指针：会以对象的方式管理分配的内存，并在适当的时间释放所获得的内存。不再需要显式的调动delete。
+			unique_ptr：与所指对象的内存绑定紧密，不能与其他unique_ptr类型指针对象共享，通过move转移后原来的就会被释放。
+			shared_ptr：允许多个该智能指针共享同一堆分配对象的内存。释放其中一个不会影响其他智能指针的使用。
+			weak_ptr：类模板。可以指向shared_ptr指针指向的内存，但不拥有该内存，且对象无效时返回nullptr。
+		2.垃圾回收：
+			基于引用计数的垃圾回收器
+			基于跟踪处理的垃圾回收器
+				标记-清除
+				标记-整理
+				标记-拷贝
+		3.C++11还未支持全面的垃圾回收
 
 第六章 提高性能及操作硬件的能力 P192
+	一、常量表达式
+		常量表达式函数，编译时常量,添加constexpr即可让GetConst()成为常量。
+			constexpr int GetConst() { return 1; }
+			要求：
+			函数体只有单一的return返回语句。
+			函数必须返回值（不能是void函数）。
+			在使用前必须已有定义。
+			return返回语句表达式中不能使用非常量表达式的函数、全局数据，且必须是一个常量表达式。
+	二、变长模板	
+		1.示例：
+			#include <stdio.h>
+			#include <stdarg.h>
+			double SumOfFloat(int count, ...) {		//浮点数求和
+				va_list ap;
+				double sum = 0;
+				va_start(ap, count);				//获得变长列表的句柄ap
+				for(int i = 0; i < count; i++)
+					sum += va_arg(ap, double);		//每次获得一个参数
+				va_end(ap);
+				return sum;
+			}
+			std::tuple<double, char, std::string> collections;
+			tuple可以有无数个参数。
+		2.变长模板:模板可以有多个入参
+			template <typename... Elements> class tuple;
+		3.
 
 第七章 为改变思考方式而改变 P238
 
