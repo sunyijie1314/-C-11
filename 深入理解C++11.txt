@@ -233,14 +233,96 @@
 			tuple可以有无数个参数。
 		2.变长模板:模板可以有多个入参
 			template <typename... Elements> class tuple;
-		3.
+		3.原子类型与原子操作
+			原子操作：最小且不可并行化的操作，即多线程访问该资源时，有且仅有唯一一个线程对这个资源进行操作。
+			使用std::atomic<T> t;可以定义原子类型
+			注：atomic_flag是无锁的，可以通过atomic_flag实现自旋锁。
+			std::atomic_flag lock = ATOMIC_FLAG_INT;	//创建自旋锁
+			lock.test_and_set();						//加锁
+			lock.clear();								//解锁
+			lock.test_and_set(std::memory_order_acquire)//ture表示被锁中
+			在线程中先后顺序不要紧的可以设置a.store(2, memry_order_relaxed);store是原子类型的赋值，相当于“=”
 
 第七章 为改变思考方式而改变 P238
-
+	一、指针空值nullptr
+		1.由于C++98中0存在二义性，既可以是一个整型，也可以是一个无类型指针（void *），NULL会被认为是整型调用，故增加nullptr。
+		2.nullptr_t类型是使用decltype(nullptr)反推导，nullptr_t可以取地址，而nullptr不可以取地址。
+	二、默认函数的控制
+		1.增加带参数的构造函数时会导致默认构造函数不再生成，进而使类不再为POD类型，所以提供了default
+			class TwoCstor {
+			public:
+				//提供了带参数的构造函数，再指示编译器
+				//提供默认版本，则本自定义类型依然是POD类型
+				TwoCstor() = default;
+				TwoCstor(int i): data(i) {}
+			private:
+				int data;
+			};
+		2.使用“= delete”可以显式删除构造函数或全局函数，如：
+			class TwoCstor {
+			public:
+				TwoCstor() = default;
+				TwoCstor(int i) = delete;	//无此构造函数
+			private:
+				int data;
+			};
+	三、lambda函数
+		1.C++11的lambda介绍
+			[capture](parameters) mutable ->return-type{statement}
+			[capture]:捕捉列表。
+			(parameters):参数列表。
+			mutable:修饰符，如const，使用修饰符则参数列表不能为空。
+			->return-type:返回类型，无返回则可以连符号一起省略。
+			{statement}:函数体。
+			使用示例：
+			[]{};								//最简lambda函数
+			int a = 3;
+			int b = 4;
+			[=]{ return a + b; };				//省略了参数列表与返回类型，返回类型被推断为int
+			auto fun1 = [&](int c)->int { b = a + c; };//省略了返回类型，无返回值
+			auto fun2 = [=, &b](int c)->int { return b = a + c;};//各部分都很完整的lambda函数
+			[var]表示值传递方式捕捉变量var
+			[=]表示值传递方式捕捉所有父作用域的变量（包括this）
+			[&var]表示引用传递捕捉变量var
+			[&]表示引用传递捕捉所有父作用域的变量（包括this）
+			[this]表示值传递方式捕捉当前的this指针
+		2.lambda与仿函数
+			模仿实现函数功能，本质是类，lambda是一种仿函数的等级形式。
+		3.for_each配合lambda函数更好用
+			for_each(nums.begin(), nums.end(), [=](int i){
+				if(i > 10)
+					largeNums.pushu_back(i);
+				});
+			寻找相等值
+			find_if(nums.begin(), nums.end(), [=](int i) {
+				return i == val;
+				});
+		
 第八章 融入实际应用 P276
-
-
-
+	1.对齐支持
+		alignof计算长度
+		alignas(double) char c;		//设置与double相同长度的char，结果必须为2的自然数幂次
+	2.通用属性
+		[[ noreturn ]]用于标识不会返回的函数。
+			没有返回值的void函数在调用完成后，调用者会接着执行函数后的代码，而不会返回的函数在被调用完成后，后续代码不会再执行
+		[[ carries_dependency ]]主要是为了解决弱内存模型平台上使用memory_order_consume内存顺序枚举问题。
+	3.Unicode支持
+		cahr16_t：用于存储UTF-16编码的Unicode数据
+		char32_t：用于存储UTF-32编码的Unicode数据
+		u8表示UTF-8编码
+		u表示UTF-16编码
+		U表示UTF-32编码
+		std::codecvt<char, char, std::mbstate_t>		//完成多字节与char之间的转换
+		std::codecvt<char16_t, char, std::mbstate_t>	//完成UTF-16与UTF-8的转换
+		std::codecvt<char32_t, char, std::mbstate_t>	//完成UTF-32与UTF-8的转换
+		std::codecvt<wchar_t, char, std::mbstate_t>		//完成多字节与wchar_t之间的转换
+	4.原生字符串字面量
+		cout << R"(hello,\n
+				world)" << endl;
+		//输出	hello,\n
+						world
+		使用R并对字符串加括号，可以输出原生字符串
+		
 
 
 
